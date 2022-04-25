@@ -36,7 +36,7 @@ script two times."){
     b { $packToInstall = $packagesRemote; $Break = $True}
     e { exit }
 
-    default {  Write-Host "Wrong input. Plase provide the character 'b' or 'v'. Select 'e' for exit." -ForegroundColor red  }
+    default {  Write-Host "Wrong input. Plase provide the character 'A' or 'B'. Select 'E' for exit." -ForegroundColor red  }
     }
 } While ($Break -eq $False)
 
