@@ -21,6 +21,17 @@ $packagesRemote = @{
     vlc='';
     dropbox='';
 }
+
+
+
+$packagesExcelscis = @{
+    zoom='';    
+    teamviewer='';
+    adobereader='--params="/UpdateMode:4"';
+    googlechrome='';
+    peazip='';
+    vlc='';
+}
 # --------------------------------------------------------------
 
 
@@ -29,14 +40,15 @@ Write-Host "`n ---Installing Windows PACKAGES --- " -ForegroundColor black -Back
 
 $Break = $False
 Do{
-    switch (Read-Host "Which apps should be installed? Enter 'A' for Basic apps, 'B' for Remote work apps. If you want both, then run the
+    switch (Read-Host "Which apps should be installed? Enter 'A' for Basic apps, 'B' for Remote work apps. C for excelscis If you want both, then run the
 script two times."){
     
     a { $packToInstall = $packagesBasic; $Break = $True}
     b { $packToInstall = $packagesRemote; $Break = $True}
+    c { $packToInstall = $packagesExcelscis; $Break = $True}
     e { exit }
 
-    default {  Write-Host "Wrong input. Plase provide the character 'A' or 'B'. Select 'E' for exit." -ForegroundColor red  }
+    default {  Write-Host "Wrong input. Plase provide the character 'A', 'B' or 'C'. Select 'E' for exit." -ForegroundColor red  }
     }
 } While ($Break -eq $False)
 
