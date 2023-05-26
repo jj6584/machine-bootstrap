@@ -3,6 +3,8 @@ Cut the boring part of having a new machine or computer, install a default softw
 
 ## How to Execute ##
 
+Open PowerShell as Administrator then execute the command below
+
 Windows
 `PowerShell.exe -ExecutionPolicy UnRestricted -File .\install-app.ps1`
 
