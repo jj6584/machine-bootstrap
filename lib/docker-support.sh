@@ -160,8 +160,10 @@ install_container_tools() {
 
 install_dive_manual() {
     local dive_version="0.10.0"
-    local arch=$(uname -m)
-    local os=$(uname -s | tr '[:upper:]' '[:lower:]')
+    local arch
+    local os
+    arch=$(uname -m)
+    os=$(uname -s | tr '[:upper:]' '[:lower:]')
     
     case $arch in
         "x86_64") arch="amd64" ;;

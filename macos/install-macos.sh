@@ -19,7 +19,7 @@ install_homebrew() {
         
         # Add Homebrew to PATH for Apple Silicon Macs
         if [[ $(uname -m) == "arm64" ]]; then
-            echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+            printf 'eval "$(/opt/homebrew/bin/brew shellenv)"\n' >> ~/.zprofile
             eval "$(/opt/homebrew/bin/brew shellenv)"
         fi
     else
@@ -138,6 +138,7 @@ main() {
     fi
     
     # Interactive menu
+    local choice
     while true; do
         show_menu
         read -p "Enter your choice: " choice

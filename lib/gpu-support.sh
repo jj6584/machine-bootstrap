@@ -438,6 +438,7 @@ setup_gpu_support() {
     echo "8) Configure for development workload"
     echo "9) Skip GPU setup"
     
+    local gpu_choice
     read -p "Select option (1-9): " gpu_choice
     
     case $gpu_choice in

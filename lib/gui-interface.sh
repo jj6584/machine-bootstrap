@@ -146,6 +146,7 @@ select_os() {
             echo "3) Arch Linux"
             echo "4) macOS"
             echo "5) Windows"
+            local choice
             read -p "Enter choice (1-5): " choice
             
             case $choice in
@@ -207,6 +208,7 @@ select_packages() {
             echo "2) Remote work packages"
             echo "3) Development packages"
             echo "4) All packages"
+            local choice
             read -p "Enter choice (1-4): " choice
             
             case $choice in

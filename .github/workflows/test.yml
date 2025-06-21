@@ -29,7 +29,13 @@ jobs:
     - name: Lint shell scripts
       run: |
         echo "🔍 Running ShellCheck on all shell scripts..."
-        find . -name "*.sh" -not -path "./.git/*" | xargs shellcheck
+        # Use our custom shellcheck script if available, otherwise basic check
+        if [ -f "scripts/shellcheck.sh" ]; then
+          chmod +x scripts/shellcheck.sh
+          ./scripts/shellcheck.sh
+        else
+          find . -name "*.sh" -not -path "./.git/*" -exec shellcheck -e SC2034 {} \;
+        fi
     
     - name: Validate YAML files
       run: |

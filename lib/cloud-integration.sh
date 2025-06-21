@@ -192,7 +192,8 @@ install_do_cli() {
     echo -e "${CYAN}Installing DigitalOcean CLI (doctl)${NC}"
     
     local doctl_version="1.94.0"
-    local arch=$(uname -m)
+    local arch
+    arch=$(uname -m)
     local os_name
     
     case "$os_type" in

@@ -120,6 +120,7 @@ main() {
     fi
     
     # Interactive menu
+    local choice
     while true; do
         show_menu
         read -p "Enter your choice: " choice
