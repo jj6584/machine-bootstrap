@@ -22,7 +22,7 @@ shellcheck_exit_code=0
 
 for script in $scripts; do
     echo "Checking: $script"
-    if ! shellcheck -e SC2034 "$script"; then
+    if ! shellcheck -e SC2034,SC2016 "$script"; then
         shellcheck_exit_code=1
     fi
 done

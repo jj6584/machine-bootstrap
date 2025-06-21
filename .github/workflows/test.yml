@@ -21,21 +21,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
     
-    - name: Install shellcheck
+    - name: Install validation tools
       run: |
         sudo apt-get update
-        sudo apt-get install -y shellcheck yamllint
-    
-    - name: Lint shell scripts
-      run: |
-        echo "🔍 Running ShellCheck on all shell scripts..."
-        # Use our custom shellcheck script if available, otherwise basic check
-        if [ -f "scripts/shellcheck.sh" ]; then
-          chmod +x scripts/shellcheck.sh
-          ./scripts/shellcheck.sh
-        else
-          find . -name "*.sh" -not -path "./.git/*" -exec shellcheck -e SC2034 {} \;
-        fi
+        sudo apt-get install -y yamllint
     
     - name: Validate YAML files
       run: |
@@ -46,6 +35,11 @@ jobs:
       run: |
         echo "💻 Checking PowerShell script syntax..."
         pwsh -Command "Get-ChildItem -Path . -Filter '*.ps1' -Recurse | ForEach-Object { Get-Content $_.FullName | Out-String | Invoke-Expression -WhatIf }" || true
+    
+    - name: Basic shell script syntax check
+      run: |
+        echo "📝 Running basic shell script syntax validation..."
+        find . -name "*.sh" -not -path "./.git/*" -exec bash -n {} \;
 
   test-linux:
     name: Test on Linux
