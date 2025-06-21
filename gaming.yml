@@ -1,0 +1,175 @@
+# Gaming-Optimized Configuration
+# Machine Bootstrap Gaming Setup
+# Copy this to ~/.config/machine-bootstrap/config.yml for gaming-focused installation
+
+# Global settings optimized for gaming
+settings:
+  auto_update: true
+  create_backup: true
+  skip_existing: false  # Allow reinstalls for gaming packages
+  parallel_install: true  # Faster gaming setup
+  log_level: "info"
+  max_retries: 3
+  timeout: 600  # Longer timeout for large gaming downloads
+  check_dependencies: true
+
+# Install gaming-focused package categories
+default_categories:
+  - basic
+  - gaming
+
+# GPU and Gaming Configuration
+gpu:
+  # Enable GPU driver installation
+  enable: true
+  
+  # Auto-detect GPU and install appropriate drivers
+  auto_detect: true
+  
+  # Gaming environment setup
+  gaming:
+    enable: true
+    install_steam: true
+    install_lutris: true
+    install_wine: true
+    install_gamemode: true
+    enable_32bit_support: true
+  
+  # Development tools for game development
+  development:
+    enable: false
+    install_cuda: false
+    install_rocm: false
+    install_opencl: true
+    install_vulkan: true
+  
+  # GPU workload optimization for gaming
+  workload: "gaming"
+  
+  # Performance settings for gaming
+  performance:
+    enable_high_performance: true
+    enable_gamemode: true
+    optimize_for_gaming: true
+
+# Gaming-specific package overrides
+packages:
+  windows:
+    gaming:
+      chocolatey:
+        - "steam"
+        - "epicgameslauncher"
+        - "origin"
+        - "uplay"
+        - "discord"
+        - "obs-studio"
+        - "msiafterburner"
+        - "7zip"
+        - "vlc"
+        - "firefox"
+      winget:
+        - "Microsoft.VCRedist.2015+.x64"
+        - "Microsoft.VCRedist.2015+.x86"
+        - "Microsoft.DirectX"
+
+  linux:
+    gaming:
+      apt:
+        - "steam"
+        - "lutris"
+        - "wine"
+        - "winetricks"
+        - "gamemode"
+        - "mangohud"
+        - "discord"
+        - "obs-studio"
+        - "vulkan-tools"
+        - "mesa-utils"
+      snap:
+        - "discord"
+        - "obs-studio"
+      flatpak:
+        - "com.valvesoftware.Steam"
+        - "net.lutris.Lutris"
+        - "com.discordapp.Discord"
+
+  macos:
+    gaming:
+      cask:
+        - "steam"
+        - "discord"
+        - "obs"
+        - "controlly"
+        - "openemu"
+
+# Gaming-focused environment variables
+environment:
+  # Steam
+  STEAM_RUNTIME: "1"
+  # Wine
+  WINEPREFIX: "$HOME/.wine"
+  WINEARCH: "win64"
+  # Performance
+  MANGOHUD: "1"
+  GAMEMODE: "1"
+  # GPU
+  MESA_GL_VERSION_OVERRIDE: "4.6"
+  MESA_GLSL_VERSION_OVERRIDE: "460"
+
+# Gaming-specific post-installation scripts
+post_install:
+  - name: "Configure Steam"
+    script: "scripts/configure_steam.sh"
+    condition: "command -v steam"
+  - name: "Setup Wine"
+    script: "scripts/setup_wine.sh"
+    condition: "command -v wine"
+  - name: "Configure GPU for gaming"
+    script: "scripts/configure_gaming_gpu.sh"
+    condition: "lspci | grep -i vga"
+  - name: "Install gaming fonts"
+    script: "scripts/install_gaming_fonts.sh"
+  - name: "Setup controller support"
+    script: "scripts/setup_controllers.sh"
+
+# Gaming-specific exclusions
+exclude:
+  - "office-suite"
+  - "heavy-dev-tools"
+  - "server-packages"
+
+# Gaming-optimized commands
+commands:
+  optimize_gaming:
+    linux: |
+      # Enable gamemode
+      sudo systemctl --user enable gamemoded
+      # Configure kernel parameters for gaming
+      echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf
+      # Set CPU governor to performance
+      echo 'performance' | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+    windows: |
+      # Enable game mode
+      powershell -Command "Set-ItemProperty -Path 'HKCU:\SOFTWARE\Microsoft\GameBar' -Name 'AllowAutoGameMode' -Value 1"
+      # Disable Windows Game Bar if preferred
+      powershell -Command "Set-ItemProperty -Path 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR' -Name 'AppCaptureEnabled' -Value 0"
+    macos: |
+      # Disable spotlight indexing during gaming sessions
+      sudo mdutil -a -i off
+      # Maximize performance settings
+      sudo pmset -a sleep 0 displaysleep 0
+  
+  install_gaming_essentials:
+    linux: |
+      # Install additional gaming libraries
+      sudo apt install -y lib32z1 lib32ncurses6 lib32stdc++6
+      # Install Proton GE
+      mkdir -p ~/.steam/root/compatibilitytools.d/
+    windows: |
+      # Install Visual C++ redistributables
+      choco install -y vcredist-all
+      # Install DirectX
+      choco install -y directx
+    macos: |
+      # Install gaming-related homebrew packages
+      brew install --cask steam discord obs controlly

@@ -1,0 +1,73 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+
+jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Determine version
+      id: version
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+        else
+          echo "version=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Generate changelog
+      id: changelog
+      run: |
+        echo "## What's Changed" > CHANGELOG.md
+        if [ -n "$(git tag --sort=-version:refname | head -2 | tail -1)" ]; then
+          PREV_TAG=$(git tag --sort=-version:refname | head -2 | tail -1)
+          git log --pretty=format:"- %s (%h)" $PREV_TAG..HEAD >> CHANGELOG.md
+        else
+          git log --pretty=format:"- %s (%h)" >> CHANGELOG.md
+        fi
+    
+    - name: Create release assets
+      run: |
+        mkdir -p release-assets
+        
+        # Create installation scripts archive
+        tar -czf release-assets/machine-bootstrap-${{ steps.version.outputs.version }}.tar.gz \
+          --exclude='.git' --exclude='tests' --exclude='.github' \
+          --exclude='*.md' --exclude='release-assets' .
+        
+        # Create one-liner installer
+        cp install.sh release-assets/install.sh
+        cp install.ps1 release-assets/install.ps1
+        
+        # Create configuration templates
+        cp config.yml.example release-assets/config.yml.template
+        cp gaming.yml release-assets/gaming-config.yml
+    
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.version.outputs.version }}
+        name: Machine Bootstrap ${{ steps.version.outputs.version }}
+        body_path: CHANGELOG.md
+        files: |
+          release-assets/*
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

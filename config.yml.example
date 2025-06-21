@@ -1,0 +1,176 @@
+# Machine Bootstrap Configuration
+# Copy this file to ~/.config/machine-bootstrap/config.yml or ./config.yml
+
+# Global settings
+settings:
+  auto_update: true
+  create_backup: true
+  skip_existing: true
+  parallel_install: false
+  log_level: "info"  # debug, info, warn, error
+  max_retries: 3
+  timeout: 300
+  check_dependencies: true
+
+# Package categories to install by default
+default_categories:
+  - basic
+  # - remote
+  # - dev
+
+# System requirements
+requirements:
+  min_disk_space_gb: 2
+  min_ram_gb: 1
+  required_tools:
+    - curl
+    - wget
+
+# Custom package lists (override defaults)
+packages:
+  windows:
+    basic:
+      chocolatey:
+        - "7zip"
+        - "vlc" 
+        - "firefox"
+        - "vscode"
+        - "discord"
+      winget:
+        - "Microsoft.WindowsTerminal"
+    dev:
+      chocolatey:
+        - "git"
+        - "nodejs"
+        - "python"
+        - "docker-desktop"
+        - "postman"
+        - "jetbrains-toolbox"
+
+  linux:
+    basic:
+      apt:
+        - "curl"
+        - "wget" 
+        - "git"
+        - "vim"
+        - "firefox"
+        - "vlc"
+      snap:
+        - "code --classic"
+        - "discord"
+        - "steam"
+    dev:
+      apt:
+        - "nodejs"
+        - "npm"
+        - "python3"
+        - "python3-pip"
+        - "build-essential"
+        - "docker.io"
+      snap:
+        - "postman"
+
+  macos:
+    basic:
+      brew:
+        - "curl"
+        - "wget"
+        - "git"
+        - "node"
+      cask:
+        - "firefox"
+        - "vlc"
+        - "discord"
+        - "visual-studio-code"
+    dev:
+      brew:
+        - "python"
+        - "docker"
+        - "mysql"
+        - "postgresql"
+      cask:
+        - "postman"
+        - "jetbrains-toolbox"
+
+# Custom repositories
+repositories:
+  google_chrome:
+    linux:
+      key_url: "https://dl.google.com/linux/linux_signing_key.pub"
+      repo: "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main"
+      package: "google-chrome-stable"
+    windows:
+      chocolatey: "googlechrome"
+    macos:
+      cask: "google-chrome"
+
+# Environment variables to set
+environment:
+  EDITOR: "vim"
+  GIT_EDITOR: "vim"
+  DOCKER_BUILDKIT: "1"
+  
+# Post-installation scripts
+post_install:
+  - name: "Configure Git"
+    script: "scripts/configure_git.sh"
+    condition: "command -v git"
+  - name: "Setup SSH"
+    script: "scripts/setup_ssh.sh"
+    condition: "[ ! -f ~/.ssh/id_rsa ]"
+  - name: "Install Oh My Zsh"
+    script: "scripts/install_oh_my_zsh.sh"
+    condition: "command -v zsh"
+
+# Exclusions (packages to never install)
+exclude:
+  - "internet-explorer"
+  - "edge-legacy"
+
+# Custom commands
+commands:
+  update_system:
+    linux: "sudo apt update && sudo apt upgrade -y"
+    macos: "brew update && brew upgrade"
+    windows: "choco upgrade all -y"
+
+# GPU and Gaming Configuration
+gpu:
+  # Enable GPU driver installation
+  enable: false
+  
+  # Auto-detect GPU and install appropriate drivers
+  auto_detect: true
+  
+  # Specific GPU drivers to install
+  drivers:
+    nvidia: false
+    amd: false
+    intel: false
+  
+  # Gaming environment setup
+  gaming:
+    enable: false
+    install_steam: true
+    install_lutris: true
+    install_wine: true
+    install_gamemode: true
+    enable_32bit_support: true
+  
+  # Development tools for GPU computing
+  development:
+    enable: false
+    install_cuda: false    # NVIDIA CUDA toolkit
+    install_rocm: false    # AMD ROCm platform
+    install_opencl: true   # OpenCL support
+    install_vulkan: true   # Vulkan support
+  
+  # GPU workload optimization
+  workload: "default"  # Options: default, gaming, development, mining
+  
+  # Performance settings
+  performance:
+    enable_high_performance: false
+    enable_gamemode: true
+    optimize_for_gaming: false
